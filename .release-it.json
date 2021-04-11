@@ -1,4 +1,14 @@
 {
+  "git": {
+    "commitMessage": "Automated release ${version}",
+    "requireBranch": "develop",
+    "git.requireCommits": true
+  },
+  "github": {
+    "release": true,
+    "releaseName": "${version}",
+    "releaseNotes": "npx auto-changelog --stdout --commit-limit false -u --template https://raw.githubusercontent.com/release-it/release-it/master/templates/changelog-compact.hbs"
+  },
   "npm": {
     "publish": false
   },
