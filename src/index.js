@@ -1,5 +1,5 @@
 const applyConfig = (config) => {
-  // test change
+  // test change new
   return config;
 };
 
