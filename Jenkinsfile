@@ -16,7 +16,6 @@ pipeline {
           "ES lint": {
             node(label: 'docker') {
               sh '''docker system info'''
-              sh '''docker login'''
               sh '''docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS'''
               sh '''docker run -i --rm --name="$BUILD_TAG-eslint" -e NAMESPACE="$NAMESPACE" -e GIT_NAME=$GIT_NAME -e GIT_BRANCH="$BRANCH_NAME" -e GIT_CHANGE_ID="$CHANGE_ID" plone/volto-addon-ci eslint'''
             }
