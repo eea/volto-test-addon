@@ -7,23 +7,39 @@
 
 ## Features
 
-###
-
-Demo GIF
+Volto empty addon used in testing. Does not do anything.
 
 ## Getting started
 
-1. Create new volto project if you don't already have one:
+### Try volto-test-addon with Docker
+
+1. Get the latest Docker images
 
    ```
-   $ npm install -g yo @plone/generator-volto
-   $ yo @plone/volto my-volto-project --addon @eeacms/volto-test-addon
-
-   $ cd my-volto-project
-   $ yarn add -W @eeacms/volto-test-addon
+   docker pull plone
+   docker pull plone/volto
    ```
 
-1. If you already have a volto project, just update `package.json`:
+1. Start Plone backend
+   ```
+   docker run -d --name plone -p 8080:8080 -e SITE=Plone -e PROFILES="profile-plone.restapi:blocks" plone
+   ```
+
+1. Start Volto frontend
+
+   ```
+   docker run -it --rm -p 3000:3000 --link plone -e ADDONS="@eeacms/volto-test-addon" plone/volto
+   ```
+
+1. Go to http://localhost:3000
+
+### Add volto-test-addon to your Volto project
+
+1. Make sure you have a [Plone backend](https://plone.org/download) up-and-running at http://localhost:8080/Plone
+
+1. Start Volto frontend
+
+* If you already have a volto project, just update `package.json`:
 
    ```JSON
    "addons": [
@@ -31,15 +47,23 @@ Demo GIF
    ],
 
    "dependencies": {
-       "@eeacms/volto-test-addon": "^2.0.0"
+       "@eeacms/volto-test-addon": "^1.0.0"
    }
+   ```
+
+* If not, create one:
+
+   ```
+   npm install -g yo @plone/generator-volto
+   yo @plone/volto my-volto-project --addon @eeacms/volto-test-addon
+   cd my-volto-project
    ```
 
 1. Install new add-ons and restart Volto:
 
    ```
-   $ yarn
-   $ yarn start
+   yarn
+   yarn start
    ```
 
 1. Go to http://localhost:3000
