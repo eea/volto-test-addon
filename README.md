@@ -7,7 +7,7 @@
 
 ## Features
 
-Volto empty addon used in testing. 
+Volto empty addon used in testing. Does not do anything.
 
 ## Getting started
 
