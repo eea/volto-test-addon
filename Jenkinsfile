@@ -174,10 +174,9 @@ pipeline {
 
     stage('Pull Request') {
       when {
-        not {
-          environment name: 'CHANGE_ID', value: ''
-        }
-        environment name: 'CHANGE_TARGET', value: 'master'
+        not { environment name: 'CHANGE_ID', value: '' }
+        environment name: 'CHANGE_TARGET', value: 'master' 
+        not { changelog '.*^Automated release [0-9\\.]+$' }
       }
       steps {
         node(label: 'docker') {
