@@ -12,6 +12,12 @@ pipeline {
   stages {
 
     stage('Code') {
+      when {
+        allOf {
+          environment name: 'CHANGE_ID', value: ''
+          not { branch 'master' }
+        }
+      }
       steps {
         parallel(
 
@@ -39,6 +45,12 @@ pipeline {
     }
 
     stage('Tests') {
+      when {
+        allOf {
+          environment name: 'CHANGE_ID', value: ''
+          not { branch 'master' }
+        }
+      }
       steps {
         parallel(
 
@@ -78,6 +90,12 @@ pipeline {
     }
 
     stage('Integration tests') {
+      when {
+        allOf {
+          environment name: 'CHANGE_ID', value: ''
+          not { branch 'master' }
+        }
+      }
       steps {
         parallel(
 
@@ -125,7 +143,6 @@ pipeline {
     }
 
     stage('Report to SonarQube') {
-      // Exclude Pull-Requests
       when {
         allOf {
           environment name: 'CHANGE_ID', value: ''
