@@ -176,7 +176,7 @@ pipeline {
       steps {
         node(label: 'docker') {
           script {
-            if ( env.CHANGE_BRANCH != "develop" ) ) {
+            if ( env.CHANGE_BRANCH != "develop" ) {
                 error "Pipeline aborted due to PR not made from develop branch"
             }
            withCredentials([string(credentialsId: 'eea-jenkins-token', variable: 'GITHUB_TOKEN')]) {
