@@ -16,7 +16,7 @@ pipeline {
         allOf {
           environment name: 'CHANGE_ID', value: ''
           not { branch 'master' }
-          not { changelog '.*Automated release [0-9].*$' }
+          not { changelog '.*^Automated release [0-9\\.]+$' }
         }
       }
       steps {
@@ -50,6 +50,7 @@ pipeline {
         allOf {
           environment name: 'CHANGE_ID', value: ''
           not { branch 'master' }
+          not { changelog '.*^Automated release [0-9\\.]+$' }
         }
       }
       steps {
@@ -95,6 +96,7 @@ pipeline {
         allOf {
           environment name: 'CHANGE_ID', value: ''
           not { branch 'master' }
+          not { changelog '.*^Automated release [0-9\\.]+$' }
         }
       }
       steps {
@@ -145,9 +147,11 @@ pipeline {
 
     stage('Report to SonarQube') {
       when {
-        allOf {
           environment name: 'CHANGE_ID', value: ''
-        }
+          anyOf {
+            branch 'master'
+            branch 'develop'
+          }
       }
       steps {
         node(label: 'swarm') {
