@@ -16,7 +16,7 @@ pipeline {
         allOf {
           environment name: 'CHANGE_ID', value: ''
           not { branch 'master' }
-          not { changelog '.*Automated release [0-9\.]+$' }
+          not { changelog '.*Automated release [0-9].*$' }
         }
       }
       steps {
