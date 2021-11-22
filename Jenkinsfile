@@ -152,6 +152,7 @@ pipeline {
             branch 'master'
             branch 'develop'
           }
+          not { changelog '.*^Automated release [0-9\\.]+$' }
       }
       steps {
         node(label: 'swarm') {
