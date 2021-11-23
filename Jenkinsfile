@@ -5,8 +5,7 @@ pipeline {
         GIT_NAME = "volto-test-addon"
         NAMESPACE = "@eeacms"
         SONARQUBE_TAGS = "volto.eea.europa.eu"
-        DEPENDENCIES = ""
-    
+        DEPENDENCIES = ""    
     }
 
   stages {
