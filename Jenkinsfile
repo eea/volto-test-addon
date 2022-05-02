@@ -185,20 +185,21 @@ pipeline {
         node(label: 'docker') {
           script {
             sh '''env'''
-            for (comment in pullRequest.comments) {
-                echo "Author: ${comment.user}, Comment: ${comment.body}"
-            }
-            if ( env.GITHUB_COMMENT  ) {
-                sh '''echo "TEST"'''
-            }         
+            def nodeJS = tool 'NodeJS';
+
             sh '''rm -rf volto-eea-design-system'''
 
-            sh '''git clone https://github.com/valentinab25/volto-eea-design-system.git'''
-            sh '''cd volto-eea-design-system; git checkout develop; cd ..'''
+            sh '''git clone https://github.com/eea/volto-eea-design-system.git'''
+            sh '''cd volto-eea-design-system; git checkout develop'''
+            sh '''sed -i 's#url:.*#url: https://ci.eionet.europa.eu/#' website/docusaurus.config.js'''
+            sh '''BASEURL="$(echo $BUILD_URL | sed 's#https://ci.eionet.europa.eu##')volto-eea-design-system/"; sed -i "s#baseUrl:.*#baseUrl: $BASEURL#" website/docusaurus.config.js'''
+            sh '''cat website/docusaurus.config.js'''
+            sh '''cd website;yarn;yarn build;cd ..'''
+            sh '''docusaurus build --out-dir ../docs'''
             publishHTML (target : [allowMissing: false,
                              alwaysLinkToLastBuild: true,
                              keepAll: true,
-                             reportDir: 'volto-eea-design-system/docs/docs/intro',
+                             reportDir: 'volto-eea-design-system/docs',
                              reportFiles: 'index.html',
                              reportName: 'volto-eea-design-system',
                              reportTitles: 'StoryBook'])
