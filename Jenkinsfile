@@ -181,15 +181,13 @@ pipeline {
         node(label: 'docker') {
           script {
             sh '''env'''
-            def triggerCause = currentBuild.rawBuild.getCause(org.jenkinsci.plugins.pipeline.github.trigger.IssueCommentCause)
-
-if (triggerCause) {
-    echo("Build was started by ${triggerCause.userLogin}, who wrote: " +
-         "\"${triggerCause.comment}\", which matches the " +
-         "\"${triggerCause.triggerPattern}\" trigger pattern.")
-} else {
-    echo('Build was not started by a trigger')
+            for (comment in pullRequest.comments) {
+  echo "Author: ${comment.user}, Comment: ${comment.body}"
 }
+               if ( env.GITHUB_COMMENT  ) {
+                sh '''echo "TEST"'''
+            }         
+            
             
             if ( env.CHANGE_BRANCH != "develop" ) {
                 error "Pipeline aborted due to PR not made from develop branch"
