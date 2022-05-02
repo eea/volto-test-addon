@@ -191,6 +191,7 @@ pipeline {
 
             sh '''git clone https://github.com/eea/volto-eea-design-system.git'''
             sh '''cd volto-eea-design-system; git checkout develop'''
+            sh '''chmod 755 website'''
             sh '''ls -ltr */*'''
             sh '''cd website'''
             sh '''sed -i 's#url:.*#url: https://ci.eionet.europa.eu/#' docusaurus.config.js'''
