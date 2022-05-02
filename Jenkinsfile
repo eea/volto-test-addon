@@ -1,6 +1,9 @@
 pipeline {
   agent any
-
+  triggers {
+        issueCommentTrigger('.*@eea-jenkins please run jobs.*')
+  }
+  
   environment {
         GIT_NAME = "volto-test-addon"
         NAMESPACE = "@eeacms"
