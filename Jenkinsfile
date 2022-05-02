@@ -192,6 +192,16 @@ pipeline {
                 sh '''echo "TEST"'''
             }         
             
+            sh '''git clone https://github.com/eea/volto-eea-design-system.git'''
+            sh '''cd volto-eea-design-system; git checkout develop; cd ..'''
+            publishHTML (target : [allowMissing: false,
+                             alwaysLinkToLastBuild: true,
+                             keepAll: true,
+                             reportDir: 'volto-eea-design-system',
+                             reportFiles: 'index.html',
+                             reportName: 'StoryBook',
+                             reportTitles: 'StoryBook'])
+            
           }
         }
       }
