@@ -191,7 +191,8 @@ pipeline {
             if ( env.GITHUB_COMMENT  ) {
                 sh '''echo "TEST"'''
             }         
-            
+            sh '''rm -rf volto-eea-design-system'''
+
             sh '''git clone https://github.com/eea/volto-eea-design-system.git'''
             sh '''cd volto-eea-design-system; git checkout develop; cd ..'''
             publishHTML (target : [allowMissing: false,
@@ -201,6 +202,8 @@ pipeline {
                              reportFiles: 'index.html',
                              reportName: 'StoryBook',
                              reportTitles: 'StoryBook'])
+            sh '''rm -rf volto-eea-design-system'''
+
             
           }
         }
