@@ -191,11 +191,12 @@ pipeline {
 
             sh '''git clone https://github.com/eea/volto-eea-design-system.git'''
             sh '''cd volto-eea-design-system; git checkout develop'''
-            sh '''ls -ltr website/*'''
-            sh '''sed -i 's#url:.*#url: https://ci.eionet.europa.eu/#' website/docusaurus.config.js'''
-            sh '''BASEURL="$(echo $BUILD_URL | sed 's#https://ci.eionet.europa.eu##')volto-eea-design-system/"; sed -i "s#baseUrl:.*#baseUrl: $BASEURL#" website/docusaurus.config.js'''
-            sh '''cat website/docusaurus.config.js'''
-            sh '''cd website;yarn;yarn build;cd ..'''
+            sh '''ls -ltr */*'''
+            sh '''cd website'''
+            sh '''sed -i 's#url:.*#url: https://ci.eionet.europa.eu/#' docusaurus.config.js'''
+            sh '''BASEURL="$(echo $BUILD_URL | sed 's#https://ci.eionet.europa.eu##')volto-eea-design-system/"; sed -i "s#baseUrl:.*#baseUrl: $BASEURL#" docusaurus.config.js'''
+            sh '''cat docusaurus.config.js'''
+            sh '''yarn;yarn build;cd ..'''
             sh '''docusaurus build --out-dir ../docs'''
             publishHTML (target : [allowMissing: false,
                              alwaysLinkToLastBuild: true,
