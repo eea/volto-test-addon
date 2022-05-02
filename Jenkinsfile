@@ -180,6 +180,7 @@ pipeline {
       steps {
         node(label: 'docker') {
           script {
+            sh '''env'''
             if ( env.CHANGE_BRANCH != "develop" ) {
                 error "Pipeline aborted due to PR not made from develop branch"
             }
