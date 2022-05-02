@@ -1,7 +1,7 @@
 pipeline {
   agent any
   triggers {
-        issueCommentTrigger('.*TEST.*')
+        issueCommentTrigger('.*@eea-jenkins please run jobs.*')
   }
   
   environment {
@@ -173,25 +173,41 @@ pipeline {
         }
       }
     }
-
-    stage('Pull Request') {
+   stage('Pull Request COMMENT') {
       when {
         not { environment name: 'CHANGE_ID', value: '' }
         environment name: 'CHANGE_TARGET', value: 'master' 
         not { changelog '.*^Automated release [0-9\\.]+$' }
+        not { environment name: 'GITHUB_COMMENT', value: '' }
+
       }
       steps {
         node(label: 'docker') {
           script {
             sh '''env'''
             for (comment in pullRequest.comments) {
-  echo "Author: ${comment.user}, Comment: ${comment.body}"
-}
-               if ( env.GITHUB_COMMENT  ) {
+                echo "Author: ${comment.user}, Comment: ${comment.body}"
+            }
+            if ( env.GITHUB_COMMENT  ) {
                 sh '''echo "TEST"'''
             }         
             
-            
+          }
+        }
+      }
+    }
+    
+    stage('Pull Request') {
+      when {
+        not { environment name: 'CHANGE_ID', value: '' }
+        environment name: 'CHANGE_TARGET', value: 'master' 
+        not { changelog '.*^Automated release [0-9\\.]+$' }
+        environment name: 'GITHUB_COMMENT', value: ''
+      }
+      steps {
+        node(label: 'docker') {
+          script {
+            sh '''env'''    
             if ( env.CHANGE_BRANCH != "develop" ) {
                 error "Pipeline aborted due to PR not made from develop branch"
             }
