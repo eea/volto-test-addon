@@ -200,7 +200,7 @@ pipeline {
                              keepAll: true,
                              reportDir: 'volto-eea-design-system/docs',
                              reportFiles: 'index.html',
-                             reportName: 'StoryBook',
+                             reportName: 'volto-eea-design-system',
                              reportTitles: 'StoryBook'])
             sh '''rm -rf volto-eea-design-system'''
 
