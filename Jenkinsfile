@@ -198,7 +198,7 @@ pipeline {
             publishHTML (target : [allowMissing: false,
                              alwaysLinkToLastBuild: true,
                              keepAll: true,
-                             reportDir: 'volto-eea-design-system/docs',
+                             reportDir: 'volto-eea-design-system/docs/docs/intro',
                              reportFiles: 'index.html',
                              reportName: 'volto-eea-design-system',
                              reportTitles: 'StoryBook'])
