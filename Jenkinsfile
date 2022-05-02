@@ -191,9 +191,8 @@ pipeline {
 
             sh '''git clone https://github.com/eea/volto-eea-design-system.git'''
             sh '''cd volto-eea-design-system; git checkout develop'''
-            sh '''chmod 755 website'''
             sh '''ls -ltr */*'''
-            sh '''cd website'''
+            sh '''cd volto-eea-design-system/website'''
             sh '''sed -i 's#url:.*#url: https://ci.eionet.europa.eu/#' docusaurus.config.js'''
             sh '''BASEURL="$(echo $BUILD_URL | sed 's#https://ci.eionet.europa.eu##')volto-eea-design-system/"; sed -i "s#baseUrl:.*#baseUrl: $BASEURL#" docusaurus.config.js'''
             sh '''cat docusaurus.config.js'''
