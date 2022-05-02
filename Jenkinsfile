@@ -183,9 +183,14 @@ pipeline {
       }
       steps {
         node(label: 'docker') {
+          
+          
           script {
             sh '''env'''
-            def nodeJS = tool 'NodeJS';
+
+          
+            env.NODEJS_HOME = "${tool 'NodeJS'}"
+            env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
 
             sh '''rm -rf volto-eea-design-system'''
 
