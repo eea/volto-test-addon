@@ -193,7 +193,7 @@ pipeline {
             }         
             sh '''rm -rf volto-eea-design-system'''
 
-            sh '''git clone https://github.com/eea/volto-eea-design-system.git'''
+            sh '''git clone https://github.com/valentinab25/volto-eea-design-system.git'''
             sh '''cd volto-eea-design-system; git checkout develop; cd ..'''
             publishHTML (target : [allowMissing: false,
                              alwaysLinkToLastBuild: true,
