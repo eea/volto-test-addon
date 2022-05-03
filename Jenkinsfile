@@ -203,7 +203,7 @@ pipeline {
                              alwaysLinkToLastBuild: true,
                              keepAll: true,
                              reportDir: 'volto-eea-design-system/docs',
-                             reportFiles: 'index.html',
+                             reportFiles: 'docs/intro/index.html',
                              reportName: 'volto-eea-design-system',
                              reportTitles: 'StoryBook'])
             sh '''rm -rf volto-eea-design-system'''
