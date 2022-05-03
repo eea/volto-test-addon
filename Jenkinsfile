@@ -213,7 +213,7 @@ pipeline {
             sh '''git clone --branch develop https://github.com/eea/volto-kitkat-frontend.git'''
             
             withCredentials([string(credentialsId: 'volto-kitkat-frontend-chromatica', variable: 'CHROMATICA_TOKEN')]) {
-              sh '''cd volto-kitkat-frontend; npm install -g mrs-developer chromatic; yarn develop; yarn install; yarn build-storybook; npx chromatic --project-token=$CHROMATICA_TOKEN; cd ..'''
+              sh '''cd volto-kitkat-frontend; npm install -g mrs-developer chromatic; yarn develop; yarn install; yarn build-storybook; npx chromatic --no-interactive --force-rebuild  --project-token=$CHROMATICA_TOKEN; cd ..'''
               sh '''cat volto-kitkat-frontend/build-storybook.log'''
             def STORY_URL = sh(script: 'grep "View your Storybook" volto-kitkat-frontend/build-storybook.log | sed "s/.*https/https/"', returnStdout: true).trim()
             def date = sh(returnStdout: true, script: "date -u").trim()
