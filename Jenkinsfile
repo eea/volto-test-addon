@@ -205,9 +205,33 @@ pipeline {
                              reportDir: 'volto-eea-design-system/docs',
                              reportFiles: 'docs/intro/index.html',
                              reportName: 'volto-eea-design-system',
-                             reportTitles: 'StoryBook'])
+                             reportTitles: 'Docusaurus'])
+            
+             sh '''git clone --branch develop https://github.com/eea/volto-eea-design-system.git'''
+            sh '''sed -i "s#url:.*#url: 'https://ci.eionet.europa.eu/',#" volto-eea-design-system/website/docusaurus.config.js'''
+            sh '''BASEURL="$(echo $BUILD_URL | sed 's#https://ci.eionet.europa.eu##')volto-eea-design-system/"; sed -i "s#baseUrl:.*#baseUrl: '$BASEURL',#" volto-eea-design-system/website/docusaurus.config.js'''
+            sh '''cat volto-eea-design-system/website/docusaurus.config.js'''
+            sh '''cd volto-eea-design-system/website; yarn;yarn build;cd ..'''
+            publishHTML (target : [allowMissing: false,
+                             alwaysLinkToLastBuild: true,
+                             keepAll: true,
+                             reportDir: 'volto-eea-design-system/docs',
+                             reportFiles: 'docs/intro/index.html',
+                             reportName: 'volto-eea-design-system',
+                             reportTitles: 'Docusaurus'])           
             sh '''rm -rf volto-eea-design-system'''
-           
+
+            sh '''git clone --branch develop https://github.com/eea/volto-kitkat-frontend.git'''
+            
+            sh '''cd volto-kitkat-frontend; npm install -g mrs-developer; yarn develop; yarn install; yarn build-storybook; cd ..'''
+            publishHTML (target : [allowMissing: false,
+                             alwaysLinkToLastBuild: true,
+                             keepAll: true,
+                             reportDir: 'volto-kitkat-frontend/docs',
+                             reportFiles: 'index.html',
+                             reportName: 'volto-kitkat-frontend',
+                             reportTitles: 'Storybook'])           
+            sh '''rm -rf volto-kitkat-frontend'''
           }
         }
       }
