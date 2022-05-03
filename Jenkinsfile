@@ -173,6 +173,8 @@ pipeline {
         }
       }
     }
+    
+    
    stage('Pull Request COMMENT') {
       when {
         not { environment name: 'CHANGE_ID', value: '' }
@@ -181,14 +183,17 @@ pipeline {
         not { environment name: 'GITHUB_COMMENT', value: '' }
 
       }
-      steps {
-        node(label: 'docker') {
-          
-          
-          script {
-            sh '''env'''
 
+      steps {
+        parallel(
+
+          "Docusaurus": {
+            
+           node(label: 'docker') {
           
+          
+            script {
+         
             env.NODEJS_HOME = "${tool 'NodeJS'}"
             env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
 
@@ -208,25 +213,42 @@ pipeline {
                              reportTitles: 'Docusaurus'])
             
             sh '''rm -rf volto-eea-design-system'''
+            def date = sh(returnStdout: true, script: "date -u").trim()
+            pullRequest.comment("Build ${env.BUILD_ID} ran at ${date}\nDocusaurus: $BUILD_URL/volto-eea-design-system")
+
+            }
+            
+           }
+
+            
+          },
             
             
+          "Storybook": {
+            
+          node(label: 'docker') {
+          script {
+                     
+            env.NODEJS_HOME = "${tool 'NodeJS'}"
+            env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
+          
+            sh '''rm -rf volto-kitkat-frontend'''
+
             sh '''git clone --branch develop https://github.com/eea/volto-kitkat-frontend.git'''
             
             withCredentials([string(credentialsId: 'volto-kitkat-frontend-chromatica', variable: 'CHROMATICA_TOKEN')]) {
               sh '''cd volto-kitkat-frontend; npm install -g mrs-developer chromatic; yarn develop; yarn install; yarn build-storybook; npx chromatic --no-interactive --force-rebuild  --project-token=$CHROMATICA_TOKEN; cd ..'''
               sh '''cat volto-kitkat-frontend/build-storybook.log'''
-            def STORY_URL = sh(script: 'grep "View your Storybook" volto-kitkat-frontend/build-storybook.log | sed "s/.*https/https/"', returnStdout: true).trim()
-            def date = sh(returnStdout: true, script: "date -u").trim()
-            pullRequest.comment("Build ${env.BUILD_ID} ran at ${date}\nDocusaurus: $BUILD_URL/volto-eea-design-system\nStoryBook: $STORY_URL")
-            sh '''rm -rf volto-kitkat-frontend'''
-
+              def STORY_URL = sh(script: 'grep "View your Storybook" volto-kitkat-frontend/build-storybook.log | sed "s/.*https/https/"', returnStdout: true).trim()
+              def date = sh(returnStdout: true, script: "date -u").trim()
+              pullRequest.comment("Build ${env.BUILD_ID} ran at ${date}\nStoryBook: $STORY_URL")
+             }
+             sh '''rm -rf volto-kitkat-frontend'''
+                      
             }
-            
-            
-
-            
+            }
           }
-        }
+            )          
       }
     }
     
