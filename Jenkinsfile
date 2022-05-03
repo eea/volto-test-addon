@@ -211,16 +211,10 @@ pipeline {
 
             sh '''git clone --branch develop https://github.com/eea/volto-kitkat-frontend.git'''
             
-            sh '''cd volto-kitkat-frontend; npm install -g mrs-developer; yarn develop; yarn install; yarn build-storybook; cd ..'''
-            
-            publishHTML (target : [allowMissing: false,
-                             alwaysLinkToLastBuild: true,
-                             keepAll: true,
-                             reportDir: 'volto-kitkat-frontend/docs',
-                             reportFiles: 'index.html',
-                             reportName: 'volto-kitkat-frontend',
-                             reportTitles: 'Storybook'])           
-            sh '''rm -rf volto-kitkat-frontend'''
+            withCredentials([string(credentialsId: 'volto-kitkat-frontend-chromatica', variable: 'CHROMATICA_TOKEN')]) {
+              sh '''cd volto-kitkat-frontend; npm install -g mrs-developer chromatic; yarn develop; yarn install; yarn build-storybook; npx chromatic --project-token=$CHROMATICA_TOKEN; cd ..'''
+         }
+              sh '''rm -rf volto-kitkat-frontend'''
           }
         }
       }
