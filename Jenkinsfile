@@ -198,7 +198,7 @@ pipeline {
             sh '''sed -i "s#url:.*#url: 'https://ci.eionet.europa.eu/',#" volto-eea-design-system/website/docusaurus.config.js'''
             sh '''BASEURL="$(echo $BUILD_URL | sed 's#https://ci.eionet.europa.eu##')volto-eea-design-system/"; sed -i "s#baseUrl:.*#baseUrl: '$BASEURL',#" volto-eea-design-system/website/docusaurus.config.js'''
             sh '''cat volto-eea-design-system/website/docusaurus.config.js'''
-            sh '''cd volto-eea-design-system/website; yarn;yarn build;cd ..'''
+            sh '''cd volto-eea-design-system/website; yarn;yarn build;yarn global add docusaurus-init;cd ..'''
             sh '''docusaurus build --out-dir ../docs'''
             publishHTML (target : [allowMissing: false,
                              alwaysLinkToLastBuild: true,
