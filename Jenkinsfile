@@ -1,7 +1,7 @@
 pipeline {
   agent any
   triggers {
-        issueCommentTrigger('.*@eea-jenkins please run jobs.*')
+        issueCommentTrigger('[^>]*@eea-jenkins.*build.*')
   }
   
   environment {
@@ -193,10 +193,11 @@ pipeline {
           
           
             script {
-         
+            if  (env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build all") or env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build doc") ) {
+
             env.NODEJS_HOME = "${tool 'NodeJS'}"
             env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
-
+              
             sh '''rm -rf volto-eea-design-system'''
 
             sh '''git clone --branch develop https://github.com/eea/volto-eea-design-system.git'''
@@ -216,6 +217,7 @@ pipeline {
             pullRequest.comment("Docusaurus: $BUILD_URL/volto-eea-design-system")
 
             }
+            }
             
            }
 
@@ -227,10 +229,11 @@ pipeline {
             
           node(label: 'docker') {
           script {
-                     
+            if  (env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build all") or env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build story") ) {
+          
             env.NODEJS_HOME = "${tool 'NodeJS'}"
             env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
-          
+
             sh '''rm -rf volto-kitkat-frontend'''
 
             sh '''git clone --branch develop https://github.com/eea/volto-kitkat-frontend.git'''
@@ -244,6 +247,7 @@ pipeline {
              sh '''rm -rf volto-kitkat-frontend'''
                       
             }
+          }
             }
           }
             )          
