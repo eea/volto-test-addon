@@ -213,8 +213,7 @@ pipeline {
                              reportTitles: 'Docusaurus'])
             
             sh '''rm -rf volto-eea-design-system'''
-            def date = sh(returnStdout: true, script: '''date -u''').trim()
-            pullRequest.comment("Build ${env.BUILD_ID} ran at ${date}\nDocusaurus: $BUILD_URL/volto-eea-design-system")
+            pullRequest.comment("Docusaurus: $BUILD_URL/volto-eea-design-system")
 
             }
             
@@ -239,9 +238,8 @@ pipeline {
             withCredentials([string(credentialsId: 'volto-kitkat-frontend-chromatica', variable: 'CHROMATICA_TOKEN')]) {
               sh '''cd volto-kitkat-frontend; npm install -g mrs-developer chromatic; yarn develop; yarn install; yarn build-storybook; npx chromatic --no-interactive --force-rebuild  --project-token=$CHROMATICA_TOKEN | tee chromatic.log; cd ..'''
               sh '''cat volto-kitkat-frontend/chromatic.log'''
-              def STORY_URL = sh(script: '''grep "View your Storybook" volto-kitkat-frontend/chromatic.log | sed "s/.*https/https/"''', returnStdout: true).trim()
-              def date = sh(returnStdout: true, script: '''date -u''').trim()
-              pullRequest.comment("Build ${env.BUILD_ID} ran at ${date}\nStoryBook: $STORY_URL")
+              def STORY_URL = sh(script: '''grep "View your Storybook" volto-kitkat-frontend/chromatic.log | sed "s/.*https/https/" ''', returnStdout: true).trim()
+              pullRequest.comment("StoryBook: $STORY_URL")
              }
              sh '''rm -rf volto-kitkat-frontend'''
                       
