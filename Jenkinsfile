@@ -188,11 +188,11 @@ pipeline {
      parallel {
        stage('Docusaurus') {
            when { 
-            anyOf {
-               environment name: 'GITHUB_COMMENT', value: '.*@eea-jenkins build all.*' 
-               environment name: 'GITHUB_COMMENT', value: '.*@eea-jenkins build doc.*' 
-             }
+            expression {
+              env.GITHUB_COMMENT.contains("@eea-jenkins build all") || env.GITHUB_COMMENT.contains("@eea-jenkins build doc")
+              }
            }
+
        
           steps {
             node(label: 'docker') {
