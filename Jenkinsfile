@@ -188,7 +188,13 @@ pipeline {
         parallel(
 
           "Docusaurus": {
-            
+           when { 
+             anyOf {
+               environment name: 'GITHUB_COMMENT', value: '.*@eea-jenkins build all.*' 
+               environment name: 'GITHUB_COMMENT', value: '.*@eea-jenkins build doc.*' 
+             }
+           }
+       
            node(label: 'docker') {
           
           
