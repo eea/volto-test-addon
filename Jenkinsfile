@@ -193,7 +193,7 @@ pipeline {
           
           
             script {
-            if  (env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build all") or env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build doc") ) {
+            if  (env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build all") || env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build doc") ) {
 
             env.NODEJS_HOME = "${tool 'NodeJS'}"
             env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
@@ -229,7 +229,7 @@ pipeline {
             
           node(label: 'docker') {
           script {
-            if  (env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build all") or env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build story") ) {
+            if  (env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build all") || env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build story") ) {
           
             env.NODEJS_HOME = "${tool 'NodeJS'}"
             env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
