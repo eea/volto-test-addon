@@ -238,8 +238,6 @@ pipeline {
           steps {
             node(label: 'docker') {
               script {
-                if  (env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build all") || env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build story") ) {
-
                   env.NODEJS_HOME = "${tool 'NodeJS'}"
                   env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
 
@@ -254,12 +252,12 @@ pipeline {
                       pullRequest.comment("StoryBook: $STORY_URL")
                    }
                    sh '''rm -rf volto-kitkat-frontend'''                      
-                }
               }
              }
           }
        }
-     }          
+       
+       
       }
     }
     
