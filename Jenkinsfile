@@ -229,10 +229,9 @@ pipeline {
             
        stage('Storybook') {
            when { 
-            anyOf {
-               environment name: 'GITHUB_COMMENT', value: '.*@eea-jenkins build all.*' 
-               environment name: 'GITHUB_COMMENT', value: '.*@eea-jenkins build story.*' 
-             }
+            expression {
+              env.GITHUB_COMMENT.contains("@eea-jenkins build all") || env.GITHUB_COMMENT.contains("@eea-jenkins build story")
+              }
            }
        
           steps {
