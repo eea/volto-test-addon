@@ -7,14 +7,10 @@ jobs:
       - uses: wow-actions/auto-comment@v1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          issuesOpened: |
-            👋 @{{ author }}
-            Thank you for raising an issue. We will will investigate into the matter and get back to you as soon as possible.
-            Please make sure you have given us as much context as possible.
-
           pullRequestOpened: |
             👋 @{{ author }}
-            To generate StoryBook and Docusaurus, write comment with:
+            
+            To generate the StoryBook and Docusaurus websites, write comment with:
             > @eea-jenkins build all
             
             To generate only StoryBook write comment with:
