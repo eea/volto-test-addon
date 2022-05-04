@@ -10,11 +10,11 @@ jobs:
           pullRequestOpened: |
             👋 @{{ author }}
             
-            To generate the StoryBook and Docusaurus websites, write comment with:
+            To generate the Storybook and Docusaurus websites, write comment with:
             > @eea-jenkins build all
             
-            To generate only StoryBook write comment with:
+            To generate only Storybook write comment with:
             > @eea-jenkins build storybook            
             
-            To generate only StoryBook write comment with:
+            To generate only Docusaurus write comment with:
             > @eea-jenkins build docusaurus  
