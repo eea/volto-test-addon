@@ -218,7 +218,7 @@ pipeline {
                                    reportTitles: 'Docusaurus'])
 
                   sh '''rm -rf volto-eea-design-system'''
-                  pullRequest.comment("Docusaurus: $BUILD_URL/volto-eea-design-system")
+                  pullRequest.comment("Docusaurus: ${BUILD_URL}volto-eea-design-system")
               }
              }
            }
@@ -248,7 +248,7 @@ pipeline {
                       sh '''cd volto-kitkat-frontend; npm install -g mrs-developer chromatic; yarn develop; yarn install; yarn build-storybook; npx chromatic --no-interactive --force-rebuild  --project-token=$CHROMATICA_TOKEN | tee chromatic.log; cd ..'''
                       sh '''cat volto-kitkat-frontend/chromatic.log'''
                       def STORY_URL = sh(script: '''grep "View your Storybook" volto-kitkat-frontend/chromatic.log | sed "s/.*https/https/" ''', returnStdout: true).trim()
-                      pullRequest.comment("StoryBook: $STORY_URL")
+                    pullRequest.comment("StoryBook: ${STORY_URL}")
                    }
                    sh '''rm -rf volto-kitkat-frontend'''                      
               }
