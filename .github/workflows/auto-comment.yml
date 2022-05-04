@@ -16,7 +16,9 @@ jobs:
             👋 @{{ author }}
             To generate StoryBook and Docusaurus, write comment with:
             > @eea-jenkins build all
+            
             To generate only StoryBook write comment with:
             > @eea-jenkins build storybook            
+            
             To generate only StoryBook write comment with:
             > @eea-jenkins build docusaurus  
