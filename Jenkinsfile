@@ -184,79 +184,82 @@ pipeline {
 
       }
 
-      steps {
-        parallel(
-
-          "Docusaurus": {
+      
+     parallel {
+       stage('Docusaurus') {
            when { 
-             anyOf {
+            anyOf {
                environment name: 'GITHUB_COMMENT', value: '.*@eea-jenkins build all.*' 
                environment name: 'GITHUB_COMMENT', value: '.*@eea-jenkins build doc.*' 
              }
            }
        
-           node(label: 'docker') {
+          steps {
+            node(label: 'docker') {
           
-          
-            script {
-            if  (env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build all") || env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build doc") ) {
+              script {
 
-            env.NODEJS_HOME = "${tool 'NodeJS'}"
-            env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
-              
-            sh '''rm -rf volto-eea-design-system'''
+                  env.NODEJS_HOME = "${tool 'NodeJS'}"
+                  env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
 
-            sh '''git clone --branch develop https://github.com/eea/volto-eea-design-system.git'''
-            sh '''sed -i "s#url:.*#url: 'https://ci.eionet.europa.eu/',#" volto-eea-design-system/website/docusaurus.config.js'''
-            sh '''BASEURL="$(echo $BUILD_URL | sed 's#https://ci.eionet.europa.eu##')volto-eea-design-system/"; sed -i "s#baseUrl:.*#baseUrl: '$BASEURL',#" volto-eea-design-system/website/docusaurus.config.js'''
-            sh '''cat volto-eea-design-system/website/docusaurus.config.js'''
-            sh '''cd volto-eea-design-system/website; yarn;yarn build;cd ..'''
-            publishHTML (target : [allowMissing: false,
-                             alwaysLinkToLastBuild: true,
-                             keepAll: true,
-                             reportDir: 'volto-eea-design-system/docs',
-                             reportFiles: 'docs/intro/index.html',
-                             reportName: 'volto-eea-design-system',
-                             reportTitles: 'Docusaurus'])
-            
-            sh '''rm -rf volto-eea-design-system'''
-            pullRequest.comment("Docusaurus: $BUILD_URL/volto-eea-design-system")
+                  sh '''rm -rf volto-eea-design-system'''
 
-            }
-            }
-            
+                  sh '''git clone --branch develop https://github.com/eea/volto-eea-design-system.git'''
+                  sh '''sed -i "s#url:.*#url: 'https://ci.eionet.europa.eu/',#" volto-eea-design-system/website/docusaurus.config.js'''
+                  sh '''BASEURL="$(echo $BUILD_URL | sed 's#https://ci.eionet.europa.eu##')volto-eea-design-system/"; sed -i "s#baseUrl:.*#baseUrl: '$BASEURL',#" volto-eea-design-system/website/docusaurus.config.js'''
+                  sh '''cat volto-eea-design-system/website/docusaurus.config.js'''
+                  sh '''cd volto-eea-design-system/website; yarn;yarn build;cd ..'''
+                  publishHTML (target : [allowMissing: false,
+                                   alwaysLinkToLastBuild: true,
+                                   keepAll: true,
+                                   reportDir: 'volto-eea-design-system/docs',
+                                   reportFiles: 'docs/intro/index.html',
+                                   reportName: 'volto-eea-design-system',
+                                   reportTitles: 'Docusaurus'])
+
+                  sh '''rm -rf volto-eea-design-system'''
+                  pullRequest.comment("Docusaurus: $BUILD_URL/volto-eea-design-system")
+              }
+             }
            }
 
             
-          },
+          }
             
             
-          "Storybook": {
-            
-          node(label: 'docker') {
-          script {
-            if  (env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build all") || env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build story") ) {
-          
-            env.NODEJS_HOME = "${tool 'NodeJS'}"
-            env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
-
-            sh '''rm -rf volto-kitkat-frontend'''
-
-            sh '''git clone --branch develop https://github.com/eea/volto-kitkat-frontend.git'''
-            
-            withCredentials([string(credentialsId: 'volto-kitkat-frontend-chromatica', variable: 'CHROMATICA_TOKEN')]) {
-              sh '''cd volto-kitkat-frontend; npm install -g mrs-developer chromatic; yarn develop; yarn install; yarn build-storybook; npx chromatic --no-interactive --force-rebuild  --project-token=$CHROMATICA_TOKEN | tee chromatic.log; cd ..'''
-              sh '''cat volto-kitkat-frontend/chromatic.log'''
-              def STORY_URL = sh(script: '''grep "View your Storybook" volto-kitkat-frontend/chromatic.log | sed "s/.*https/https/" ''', returnStdout: true).trim()
-              pullRequest.comment("StoryBook: $STORY_URL")
+       stage('Storybook') {
+           when { 
+            anyOf {
+               environment name: 'GITHUB_COMMENT', value: '.*@eea-jenkins build all.*' 
+               environment name: 'GITHUB_COMMENT', value: '.*@eea-jenkins build story.*' 
              }
-             sh '''rm -rf volto-kitkat-frontend'''
-                      
-            }
+           }
+       
+          steps {
+            node(label: 'docker') {
+              script {
+                if  (env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build all") || env.GITHUB_COMMENT.toLowerCase().contains("@eea-jenkins build story") ) {
+
+                  env.NODEJS_HOME = "${tool 'NodeJS'}"
+                  env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
+
+                  sh '''rm -rf volto-kitkat-frontend'''
+
+                  sh '''git clone --branch develop https://github.com/eea/volto-kitkat-frontend.git'''
+
+                  withCredentials([string(credentialsId: 'volto-kitkat-frontend-chromatica', variable: 'CHROMATICA_TOKEN')]) {
+                      sh '''cd volto-kitkat-frontend; npm install -g mrs-developer chromatic; yarn develop; yarn install; yarn build-storybook; npx chromatic --no-interactive --force-rebuild  --project-token=$CHROMATICA_TOKEN | tee chromatic.log; cd ..'''
+                      sh '''cat volto-kitkat-frontend/chromatic.log'''
+                      def STORY_URL = sh(script: '''grep "View your Storybook" volto-kitkat-frontend/chromatic.log | sed "s/.*https/https/" ''', returnStdout: true).trim()
+                      pullRequest.comment("StoryBook: $STORY_URL")
+                   }
+                   sh '''rm -rf volto-kitkat-frontend'''                      
+                }
+              }
+             }
           }
-            }
-          }
-            )          
+       }
+     }          
       }
     }
     
