@@ -1,5 +1,7 @@
 pipeline {
+  
   agent any
+  
   triggers {
     
             issueCommentTrigger('[^>]*@eea-jenkins.*build.*')
