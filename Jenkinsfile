@@ -15,7 +15,14 @@ pipeline {
     }
 
   stages {
-
+    stage('Test') {
+      steps {
+        node(label: 'swarm') {
+            sh '''env'''
+        }
+      }
+    }
+    
     stage('Code') {
       when {
         allOf {
