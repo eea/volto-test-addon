@@ -2,7 +2,7 @@ pipeline {
   agent any
   
   triggers {
-            issueCommentTrigger('[^>]*@eea-jenkins.*build.*')
+     issueCommentTrigger('[^>]*@eea-jenkins.*build.*')
   }
   
   environment {
@@ -18,6 +18,7 @@ pipeline {
       steps {
         node(label: 'swarm') {
             sh '''env'''
+          sh '''exit 1'''
         }
       }
     }
