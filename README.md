@@ -37,6 +37,10 @@ Volto empty addon used in testing. Does not do anything.
 
 1. Make sure you have a [Plone backend](https://plone.org/download) up-and-running at http://localhost:8080/Plone
 
+   ```Bash
+   docker compose up backend
+   ```
+
 1. Start Volto frontend
 
 * If you already have a volto project, just update `package.json`:
