@@ -61,6 +61,13 @@ pipeline {
     }
 
     stage('Testing') {
+   agent {
+      node { label 'docker-host' }
+    }
+
+    options {
+                throttle(['cypress'])
+    }
       when {
         anyOf {
           allOf {
