@@ -2,6 +2,14 @@ pipeline {
   agent {
     node { label 'docker-host' }
   }
+  
+  options {
+    throttleJobProperty(
+      categories: ['cypress'],
+      throttleEnabled: true,
+      throttleOption: 'category'
+    )
+  }
 
   environment {
     GIT_NAME = "volto-test-addon"
