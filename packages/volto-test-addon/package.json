@@ -1,0 +1,73 @@
+{
+  "name": "@eeacms/volto-test-addon",
+  "version": "0.2.3",
+  "description": "Volto empty addon used in testing. Does not do anything.",
+  "main": "src/index.ts",
+  "license": "MIT",
+  "keywords": [
+    "volto-addon",
+    "volto",
+    "plone",
+    "react"
+  ],
+  "author": "European Environment Agency",
+  "homepage": "https://github.com/eea/volto-test-addon#readme",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:eea/volto-test-addon"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "i18n": "rm -rf build/messages && NODE_ENV=production i18n --addon",
+    "dry-release": "release-it --dry-run",
+    "release": "release-it",
+    "release-major-alpha": "release-it major --preRelease=alpha",
+    "release-alpha": "release-it --preRelease=alpha",
+    "prepare": "cd ../.. && husky install || true"
+  },
+  "addons": [],
+  "theme": "",
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@plone/registry": "workspace:*",
+    "@plone/scripts": "workspace:*",
+    "@plone/types": "workspace:*",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "typescript": "^5.7.3",
+    "@testing-library/react": "^16.2.0",
+    "release-it": "^19.0.5",
+    "vitest": "^3.1.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
+    "@cypress/code-coverage": "^3.10.0",
+    "@vitest/coverage-v8": "^3.1.2"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json}": [
+      "make lint-fix",
+      "make prettier-fix"
+    ],
+    "src/**/*.{jsx}": [
+      "make i18n"
+    ],
+    "theme/**/*.{css,less}": [
+      "make stylelint-fix"
+    ],
+    "src/**/*.{css,less}": [
+      "make stylelint-fix"
+    ],
+    "theme/**/*.overrides": [
+      "make stylelint-fix"
+    ],
+    "src/**/*.overrides": [
+      "make stylelint-fix"
+    ]
+  }
+}

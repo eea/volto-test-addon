@@ -127,100 +127,6 @@ Cypress.Commands.add(
   }
 );
 
-// --- Add DX Content-Type ----------------------------------------------------------
-Cypress.Commands.add('addContentType', (name) => {
-  let api_url, auth;
-  api_url = Cypress.env('API_PATH') || 'http://localhost:8080/Plone';
-  auth = {
-    user: 'admin',
-    pass: 'admin',
-  };
-  return cy
-    .request({
-      method: 'POST',
-      url: `${api_url}/@controlpanels/dexterity-types/${name}`,
-      headers: {
-        Accept: 'application/json',
-      },
-      auth: auth,
-      body: {
-        title: name,
-      },
-    })
-    .then(() => console.log(`${name} content-type added.`));
-});
-
-// --- Remove DX behavior ----------------------------------------------------------
-Cypress.Commands.add('removeContentType', (name) => {
-  let api_url, auth;
-  api_url = Cypress.env('API_PATH') || 'http://localhost:8080/Plone';
-  auth = {
-    user: 'admin',
-    pass: 'admin',
-  };
-  return cy
-    .request({
-      method: 'DELETE',
-      url: `${api_url}/@controlpanels/dexterity-types/${name}`,
-      headers: {
-        Accept: 'application/json',
-      },
-      auth: auth,
-      body: {},
-    })
-    .then(() => console.log(`${name} content-type removed.`));
-});
-
-// --- Add DX field ----------------------------------------------------------
-Cypress.Commands.add('addSlateJSONField', (type, name) => {
-  let api_url, auth;
-  api_url = Cypress.env('API_PATH') || 'http://localhost:8080/Plone';
-  auth = {
-    user: 'admin',
-    pass: 'admin',
-  };
-  return cy
-    .request({
-      method: 'POST',
-      url: `${api_url}/@types/${type}`,
-      headers: {
-        Accept: 'application/json',
-      },
-      auth: auth,
-      body: {
-        id: name,
-        title: name,
-        description: 'Slate JSON Field',
-        factory: 'SlateJSONField',
-        required: false,
-      },
-    })
-    .then(() => console.log(`${name} SlateJSONField field added to ${type}`));
-});
-
-// --- Remove DX field ----------------------------------------------------------
-Cypress.Commands.add('removeSlateJSONField', (type, name) => {
-  let api_url, auth;
-  api_url = Cypress.env('API_PATH') || 'http://localhost:8080/Plone';
-  auth = {
-    user: 'admin',
-    pass: 'admin',
-  };
-  return cy
-    .request({
-      method: 'DELETE',
-      url: `${api_url}/@types/${type}/${name}`,
-      headers: {
-        Accept: 'application/json',
-      },
-      auth: auth,
-      body: {},
-    })
-    .then(() =>
-      console.log(`${name} SlateJSONField field removed from ${type}`)
-    );
-});
-
 // --- REMOVE CONTENT --------------------------------------------------------
 Cypress.Commands.add('removeContent', (path) => {
   let api_url, auth;
@@ -240,41 +146,6 @@ Cypress.Commands.add('removeContent', (path) => {
       body: {},
     })
     .then(() => console.log(`${path} removed`));
-});
-
-Cypress.Commands.add('typeInSlate', { prevSubject: true }, (subject, text) => {
-  return (
-    cy
-      .wrap(subject)
-      .then((subject) => {
-        subject[0].dispatchEvent(
-          new InputEvent('beforeinput', {
-            inputType: 'insertText',
-            data: text,
-          })
-        );
-        return subject;
-      })
-      // TODO: do this only for Electron-based browser which does not understand instantaneously
-      // that the user inserted some text in the block
-      .wait(1000)
-  );
-});
-
-Cypress.Commands.add('lineBreakInSlate', { prevSubject: true }, (subject) => {
-  return (
-    cy
-      .wrap(subject)
-      .then((subject) => {
-        subject[0].dispatchEvent(
-          new InputEvent('beforeinput', { inputType: 'insertLineBreak' })
-        );
-        return subject;
-      })
-      // TODO: do this only for Electron-based browser which does not understand instantaneously
-      // that the block was split
-      .wait(1000)
-  );
 });
 
 // --- SET WORKFLOW ----------------------------------------------------------
@@ -343,40 +214,37 @@ Cypress.Commands.add('waitForResourceToLoad', (fileName, type) => {
   });
 });
 
-// Low level command reused by `setSelection` and low level command `setCursor`
-Cypress.Commands.add('selection', { prevSubject: true }, (subject, fn) => {
-  cy.wrap(subject).trigger('mousedown').then(fn).trigger('mouseup');
-
-  cy.document().trigger('selectionchange');
-  return cy.wrap(subject);
+// --- SLATE EDITOR COMMANDS -------------------------------------------------
+Cypress.Commands.add('typeInSlate', { prevSubject: true }, (subject, text) => {
+  return (
+    cy
+      .wrap(subject)
+      .then((subject) => {
+        subject[0].dispatchEvent(
+          new InputEvent('beforeinput', {
+            inputType: 'insertText',
+            data: text,
+          })
+        );
+        return subject;
+      })
+      .wait(1000)
+  );
 });
 
-Cypress.Commands.add(
-  'setSelection',
-  { prevSubject: true },
-  (subject, query, endQuery) => {
-    return cy.wrap(subject).selection(($el) => {
-      if (typeof query === 'string') {
-        const anchorNode = getTextNode($el[0], query);
-        const focusNode = endQuery ? getTextNode($el[0], endQuery) : anchorNode;
-        const anchorOffset = anchorNode.wholeText.indexOf(query);
-        const focusOffset = endQuery
-          ? focusNode.wholeText.indexOf(endQuery) + endQuery.length
-          : anchorOffset + query.length;
-        setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
-      } else if (typeof query === 'object') {
-        const el = $el[0];
-        const anchorNode = getTextNode(el.querySelector(query.anchorQuery));
-        const anchorOffset = query.anchorOffset || 0;
-        const focusNode = query.focusQuery
-          ? getTextNode(el.querySelector(query.focusQuery))
-          : anchorNode;
-        const focusOffset = query.focusOffset || 0;
-        setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
-      }
-    });
-  }
-);
+Cypress.Commands.add('lineBreakInSlate', { prevSubject: true }, (subject) => {
+  return (
+    cy
+      .wrap(subject)
+      .then((subject) => {
+        subject[0].dispatchEvent(
+          new InputEvent('beforeinput', { inputType: 'insertLineBreak' })
+        );
+        return subject;
+      })
+      .wait(1000)
+  );
+});
 
 Cypress.Commands.add('getSlate', ({ createNewSlate = true } = {}) => {
   let slate;
@@ -421,7 +289,7 @@ Cypress.Commands.add('setSlateSelection', (subject, query, endQuery) => {
     .focus()
     .click()
     .setSelection(subject, query, endQuery)
-    .wait(1000); // this wait is needed for the selection change to be detected after
+    .wait(1000);
 });
 
 Cypress.Commands.add('getSlateEditorAndType', (type) => {
@@ -439,13 +307,11 @@ Cypress.Commands.add('setSlateCursor', (subject, query, endQuery) => {
 Cypress.Commands.add('clickSlateButton', (button) => {
   cy.get(`.slate-inline-toolbar .button-wrapper a[title="${button}"]`, {
     timeout: 10000,
-  }).click({ force: true }); //force click is needed to ensure the button in visible in view.
+  }).click({ force: true });
 });
 
 Cypress.Commands.add('toolbarSave', () => {
   cy.wait(1000);
-
-  // Save
   cy.get('#toolbar-save').click();
   cy.waitForResourceToLoad('@navigation');
   cy.waitForResourceToLoad('@breadcrumbs');
@@ -455,7 +321,40 @@ Cypress.Commands.add('toolbarSave', () => {
   cy.url().should('eq', Cypress.config().baseUrl + '/cypress/my-page');
 });
 
-// Low level command reused by `setCursorBefore` and `setCursorAfter`, equal to `setCursorAfter`
+// --- SELECTION COMMANDS ---------------------------------------------------
+Cypress.Commands.add('selection', { prevSubject: true }, (subject, fn) => {
+  cy.wrap(subject).trigger('mousedown').then(fn).trigger('mouseup');
+  cy.document().trigger('selectionchange');
+  return cy.wrap(subject);
+});
+
+Cypress.Commands.add(
+  'setSelection',
+  { prevSubject: true },
+  (subject, query, endQuery) => {
+    return cy.wrap(subject).selection(($el) => {
+      if (typeof query === 'string') {
+        const anchorNode = getTextNode($el[0], query);
+        const focusNode = endQuery ? getTextNode($el[0], endQuery) : anchorNode;
+        const anchorOffset = anchorNode.wholeText.indexOf(query);
+        const focusOffset = endQuery
+          ? focusNode.wholeText.indexOf(endQuery) + endQuery.length
+          : anchorOffset + query.length;
+        setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+      } else if (typeof query === 'object') {
+        const el = $el[0];
+        const anchorNode = getTextNode(el.querySelector(query.anchorQuery));
+        const anchorOffset = query.anchorOffset || 0;
+        const focusNode = query.focusQuery
+          ? getTextNode(el.querySelector(query.focusQuery))
+          : anchorNode;
+        const focusOffset = query.focusOffset || 0;
+        setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+      }
+    });
+  }
+);
+
 Cypress.Commands.add(
   'setCursor',
   { prevSubject: true },
@@ -468,48 +367,10 @@ Cypress.Commands.add(
       document.getSelection().removeAllRanges();
       document.getSelection().collapse(node, offset);
     });
-    // Depending on what you're testing, you may need to chain a `.click()` here to ensure
-    // further commands are picked up by whatever you're testing (this was required for Slate, for example).
   }
 );
 
-Cypress.Commands.add(
-  'setCursorBefore',
-  { prevSubject: true },
-  (subject, query) => {
-    cy.wrap(subject).setCursor(query, true);
-  }
-);
-
-Cypress.Commands.add(
-  'setCursorAfter',
-  { prevSubject: true },
-  (subject, query) => {
-    cy.wrap(subject).setCursor(query);
-  }
-);
-
-// Helper functions
-function getTextNode(el, match) {
-  const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
-  if (!match) {
-    return walk.nextNode();
-  }
-
-  let node;
-  while ((node = walk.nextNode())) {
-    if (node.wholeText.includes(match)) {
-      return node;
-    }
-  }
-}
-
-function setBaseAndExtent(...args) {
-  const document = args[0].ownerDocument;
-  document.getSelection().removeAllRanges();
-  document.getSelection().setBaseAndExtent(...args);
-}
-
+// --- UTILITY COMMANDS ------------------------------------------------------
 Cypress.Commands.add('navigate', (route = '') => {
   return cy.window().its('appHistory').invoke('push', route);
 });
@@ -534,3 +395,24 @@ Cypress.Commands.add(
     });
   }
 );
+
+// --- HELPER FUNCTIONS -----------------------------------------------------
+function getTextNode(el, match) {
+  const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+  if (!match) {
+    return walk.nextNode();
+  }
+
+  let node;
+  while ((node = walk.nextNode())) {
+    if (node.wholeText.includes(match)) {
+      return node;
+    }
+  }
+}
+
+function setBaseAndExtent(...args) {
+  const document = args[0].ownerDocument;
+  document.getSelection().removeAllRanges();
+  document.getSelection().setBaseAndExtent(...args);
+}
